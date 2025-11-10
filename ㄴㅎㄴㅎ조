@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TrashTrade 🌿 다시 쓰는 기쁨</title>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --main-green: #6BA368;
+    --light-green: #A1C181;
+    --ivory: #F7F4EA;
+    --accent-yellow: #F9CC66;
+    --text-dark: #2B2B2B;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body {
+    background: var(--ivory) url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+    font-family: 'Gowun Batang', serif;
+    color: var(--text-dark);
+    line-height: 1.5;
+  }
+  header {
+    display:flex;justify-content:space-between;align-items:center;
+    padding:18px 22px;background: var(--light-green);color:#fff;
+    border-bottom:3px solid var(--main-green);
+  }
+  header h1 { font-size:22px;font-weight:700; }
+  nav a {
+    color:#fff;text-decoration:none;margin-left:16px;font-weight:600;
+  }
+  .cta-btn {
+    background: var(--accent-yellow);
+    color: var(--text-dark);
+    border:none;
+    padding:10px 16px;
+    border-radius:10px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .hero {
+    max-width:960px;margin:40px auto;
+    background:#fff;border-radius:16px;
+    box-shadow:0 4px 16px rgba(0,0,0,0.05);
+    padding:28px;text-align:center;
+  }
+  .hero h2 {
+    color: var(--main-green);
+    font-size:26px;
+    margin-bottom:12px;
+  }
+  .controls {
+    max-width:960px;
+    margin:20px auto;
+    display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
+  }
+  .controls input, .controls select {
+    padding:8px 10px;border:1px solid #ccc;border-radius:8px;
+    background:#fff;font-family:'Gowun Batang',serif;
+  }
+  .grid {
+    max-width:960px;
+    margin:0 auto;
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:18px;
+  }
+  .card {
+    background:#fff;border-radius:14px;overflow:hidden;
+    box-shadow:0 4px 14px rgba(0,0,0,0.05);
+    display:flex;flex-direction:column;
+    transition: transform .2s;
+  }
+  .card:hover { transform: translateY(-4px); }
+  .card img {
+    width:100%;height:180px;object-fit:cover;
+  }
+  .card-content { padding:14px;flex:1;display:flex;flex-direction:column; }
+  .card-content h3 { color:var(--main-green);font-size:18px;margin-bottom:6px; }
+  .card-footer { display:flex;justify-content:space-between;align-items:center; }
+  .tag {
+    background:var(--light-green);
+    color:#fff;font-size:12px;padding:4px 8px;border-radius:8px;
+  }
+  .exchange-btn {
+    background: var(--main-green);
+    color:#fff;border:none;padding:6px 10px;border-radius:8px;
+    cursor:pointer;font-weight:600;
+  }
+  footer {
+    text-align:center;margin-top:40px;color:#666;font-size:13px;
+  }
+  /* 사이드 패널 */
+  #sidePanel {
+    position:fixed;top:0;right:-360px;width:340px;height:100%;
+    background:#fff;box-shadow:-2px 0 8px rgba(0,0,0,0.1);
+    transition:0.4s;padding:20px;overflow-y:auto;
+    border-left:3px solid var(--main-green);
+  }
+  #sidePanel.open { right:0; }
+  #closePanel {
+    float:right;background:none;border:none;font-size:20px;cursor:pointer;color:#555;
+  }
+  .shop-item {display:flex;justify-content:space-between;align-items:center;margin:10px 0;padding:10px;border-radius:8px;background:#F2F8F3;}
+  .shop-item button {background:var(--main-green);color:#fff;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>TrashTrade 🌿</h1>
+  <nav>
+    <a href="#">홈</a>
+    <a href="#" id="openShopBtn">포인트 상점</a>
+    <button class="cta-btn" id="registerBtn">물품 등록</button>
+  </nav>
+</header>
+
+<section class="hero">
+  <h2>다시 쓰는 기쁨, 지구와 함께 🌎</h2>
+  <p>전국 어디서나, 지역 기반 친환경 교환 플랫폼.</p>
+</section>
+
+<div class="controls">
+  <input type="text" id="searchInput" placeholder="물품명 검색">
+  <select id="regionSelect">
+    <option value="">지역 선택</option>
+    <option>서울특별시</option>
+    <option>부산광역시</option>
+    <option>대구광역시</option>
+    <option>광주광역시</option>
+    <option>대전광역시</option>
+    <option>경기도</option>
+    <option>강원도</option>
+    <option>충청북도</option>
+    <option>충청남도</option>
+    <option>전라북도</option>
+    <option>전라남도</option>
+    <option>경상북도</option>
+    <option>경상남도</option>
+    <option>제주특별자치도</option>
+  </select>
+</div>
+
+<div class="grid" id="itemGrid"></div>
+
+<footer>🌱 TrashTrade — 함께 만드는 작은 순환, 큰 변화 🌍</footer>
+
+<!-- 사이드 패널 (포인트 상점 / 거래 / 대시보드 공용) -->
+<div id="sidePanel">
+  <button id="closePanel">×</button>
+  <h3>포인트 상점 🏪</h3>
+  <div id="shopContainer">
+    <div class="shop-item"><span>🌿 나뭇잎 뱃지</span><button data-cost="50">50P 구매</button></div>
+    <div class="shop-item"><span>🌼 에코 머그컵</span><button data-cost="120">120P 구매</button></div>
+    <div class="shop-item"><span>🧢 리사이클 모자</span><button data-cost="150">150P 구매</button></div>
+    <div class="shop-item"><span>👕 업사이클 티셔츠</span><button data-cost="200">200P 구매</button></div>
+    <div class="shop-item"><span>🎒 친환경 가방</span><button data-cost="300">300P 구매</button></div>
+    <div class="shop-item"><span>☕ 대나무 텀블러</span><button data-cost="250">250P 구매</button></div>
+  </div>
+  <h3 style="margin-top:20px;">탄소절감 대시보드 🌍</h3>
+  <p id="carbonText">절감된 탄소: 0.0 kg CO₂</p>
+  <div style="width:100%;background:#eee;border-radius:8px;">
+    <div id="carbonBar" style="width:0%;height:14px;background:var(--main-green);border-radius:8px;"></div>
+  </div>
+</div>
+
+<script>
+let items = [];
+let points = 200; // 초기 포인트
+let carbonSaved = 0;
+
+// 예시 데이터
+items.push({title:"중고 키보드",desc:"작동 잘 됩니다.",region:"서울특별시",img:"https://images.unsplash.com/photo-1593642634367-d91a135587b5?auto=format&fit=crop&w=800&q=60"});
+items.push({title:"니트 가디건",desc:"따뜻한 색감, 깨끗해요.",region:"경기도",img:"https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=800&q=60"});
+
+function renderItems(){
+  const grid=document.getElementById('itemGrid');
+  grid.innerHTML='';
+  items.forEach((it,i)=>{
+    const card=document.createElement('div');
+    card.className='card';
+    card.innerHTML=`
+      <img src="${it.img}" alt="${it.title}">
+      <div class="card-content">
+        <h3>${it.title}</h3>
+        <p>${it.desc}</p>
+        <div class="card-footer">
+          <span class="tag">${it.region}</span>
+          <button class="exchange-btn" data-index="${i}">교환</button>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+renderItems();
+
+document.getElementById('openShopBtn').onclick=()=>{document.getElementById('sidePanel').classList.add('open');};
+document.getElementById('closePanel').onclick=()=>{document.getElementById('sidePanel').classList.remove('open');};
+
+// 교환 버튼 클릭 시
+document.addEventListener('click',e=>{
+  if(e.target.classList.contains('exchange-btn')){
+    alert('거래 요청이 전송되었습니다. 판매자가 수락 시 거래가 진행됩니다.');
+    points+=20;
+    carbonSaved+=0.3;
+    updateCarbon();
+  }
+});
+
+// 상점 구매 버튼
+document.querySelectorAll('#shopContainer button').forEach(btn=>{
+  btn.onclick=()=>{
+    const cost=parseInt(btn.dataset.cost);
+    if(points>=cost){
+      points-=cost;
+      alert(`구매 완료! 현재 포인트: ${points}P`);
+    }else alert('포인트가 부족합니다.');
+  };
+});
+
+function updateCarbon(){
+  document.getElementById('carbonText').textContent=`절감된 탄소: ${carbonSaved.toFixed(2)} kg CO₂`;
+  document.getElementById('carbonBar').style.width=Math.min(carbonSaved*10,100)+'%';
+}
+</script>
+
+</body>
+</html>
